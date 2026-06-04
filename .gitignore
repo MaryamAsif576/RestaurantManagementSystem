@@ -1,0 +1,23 @@
+# Java
+*.class
+*.jar
+*.war
+target/
+
+# IntelliJ
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# MySQL
+*.sql~
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
