@@ -363,7 +363,7 @@
         .btn-gray  { background: #888; }
         .btn-gray:hover  { background: #555; box-shadow: none; transform: none; }
 
-        button { /* fallback for inline buttons */
+        button {
             background: var(--accent-burgundy);
             color: var(--white);
             padding: 10px 20px;
@@ -375,6 +375,42 @@
             transition: all 0.2s;
         }
         button:hover { background: #5a0015; }
+
+        /* ══════════════════════════════
+           REPORT SUITE ADDITIONS
+        ══════════════════════════════ */
+        .report-section {
+            background: var(--white);
+            border: 1px solid rgba(27,67,50,0.12);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .report-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-green);
+            font-size: 16px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--gold);
+            padding-left: 10px;
+        }
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .param-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .param-field {
+            flex: 1;
+            min-width: 180px;
+        }
 
         /* ══════════════════════════════
            CATEGORY PREVIEW
@@ -452,7 +488,6 @@
 </head>
 <body>
 
-<!-- EDIT MODAL -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <button class="modal-close" onclick="closeEditModal()">✕</button>
@@ -479,7 +514,6 @@
 
 <div class="main-container">
 
-    <!-- ══ SIDEBAR ══ -->
     <div class="sidebar">
         <div class="sidebar-header">
             <span class="book-icon">📚</span>
@@ -516,10 +550,8 @@
         </div>
     </div>
 
-    <!-- ══ CONTENT ══ -->
     <div class="content-area">
 
-        <!-- PANEL 1: Dashboard -->
         <div id="dashboardPanel" class="panel" style="display:block;">
             <div class="panel-title">🏠 Reception Dashboard</div>
             <img class="library-banner"
@@ -555,7 +587,6 @@
             </div>
         </div>
 
-        <!-- PANEL 2: Add Book -->
         <div id="addBookPanel" class="panel">
             <div class="panel-title">📖 Add Book</div>
             <div style="display:flex;gap:25px;">
@@ -596,7 +627,6 @@
             </div>
         </div>
 
-        <!-- PANEL 3: Issue Book -->
         <div id="issueBookPanel" class="panel">
             <div class="panel-title">🔄 Issue Book to Member</div>
             <div class="info-notice">Find an available Copy ID from the Catalog, then enter it below along with the Member and Staff IDs.</div>
@@ -615,7 +645,6 @@
             </div>
         </div>
 
-        <!-- PANEL 4: Books Issued (NEW) -->
         <div id="issuedBooksPanel" class="panel">
             <div class="panel-title">📜 Books Issued</div>
             <p style="font-size:13px;color:#777;margin-bottom:15px;">All books currently issued from the library, showing member details, book name, staff who processed it, and loan dates.</p>
@@ -639,7 +668,6 @@
             </div>
         </div>
 
-        <!-- PANEL 5: Catalog -->
         <div id="viewBooksPanel" class="panel">
             <div class="panel-title">📋 Library Catalog</div>
             <div class="table-wrap">
@@ -652,7 +680,6 @@
             </div>
         </div>
 
-        <!-- PANEL 6: Fines -->
         <div id="finesPanel" class="panel">
             <div class="panel-title">💰 Overdue Fines</div>
             <p style="font-size:13px;color:#666;margin-bottom:15px;">Members with overdue books are fined <strong>Rs 5.00 per day</strong> past the due date.</p>
@@ -667,18 +694,61 @@
             </div>
         </div>
 
-        <!-- PANEL 7: Reports -->
         <div id="reportsPanel" class="panel">
-            <div class="panel-title">🖨️ Generate Reports</div>
-            <p style="font-size:13px;color:#666;margin-bottom:20px;">Generate a PDF report of all currently overdue books. The file will be saved to your Desktop.</p>
-            <button class="btn" onclick="generateOverduePdf()">🖨️ Generate Overdue Books PDF</button>
+            <div class="panel-title">🖨️ Management & Audit Report Suite</div>
+            <p style="font-size:13px;color:#666;margin-bottom:20px;">
+                Generate administrative-level data sheets from the database system. Choose a configuration below to output structured documents.
+            </p>
+
+            <div class="report-section">
+                <h3>🗓️ Category 1: Time-Period Ledger Reports</h3>
+                <div class="param-row">
+                    <div class="param-field">
+                        <label>Range Start Date</label>
+                        <input type="date" id="reportStartDate" value="2026-01-01">
+                    </div>
+                    <div class="param-field">
+                        <label>Range End Date</label>
+                        <input type="date" id="reportEndDate" value="2026-06-30">
+                    </div>
+                </div>
+                <div class="report-grid">
+                    <button class="btn btn-green" onclick="generateReport('issuance-pdf', 'date')">1. Book Issuance Audit</button>
+                    <button class="btn btn-green" onclick="generateReport('revenue-pdf', 'date')">2. Fine Income Statement</button>
+                    <button class="btn btn-green" onclick="generateReport('procurement-pdf', 'date')">3. Acquisitions Audit</button>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h3>🔍 Category 2: Target Variable Tracking Reports</h3>
+                <div class="param-row">
+                    <div class="param-field">
+                        <label>Database Entry ID Reference (Member, Supplier, or Book ID)</label>
+                        <input type="text" id="reportTargetId" placeholder="e.g., 104, 203, or 501" value="1">
+                    </div>
+                </div>
+                <div class="report-grid">
+                    <button class="btn btn-brown" onclick="generateReport('member-history-pdf', 'target')">4. Member Activity Summary</button>
+                    <button class="btn btn-brown" onclick="generateReport('supplier-pdf', 'target')">5. Supplier Order Profile</button>
+                    <button class="btn btn-brown" onclick="generateReport('book-track-pdf', 'target')">6. Individual Book History</button>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h3>📊 Category 3: System Compilation Summaries</h3>
+                <p style="font-size:12px; color:#777; margin-bottom:10px;">System audits summarizing overall status records.</p>
+                <div class="report-grid">
+                    <button class="btn" onclick="generateReport('overdue-pdf', 'none')">7. Active Overdue Records</button>
+                    <button class="btn" onclick="generateReport('popular-books-pdf', 'none')">8. Top Borrowed Analytics</button>
+                    <button class="btn" onclick="generateReport('inventory-status-pdf', 'none')">9. Categorized Stock Audit</button>
+                    <button class="btn" onclick="generateReport('inactive-members-pdf', 'none')">10. Inactive Member List</button>
+                </div>
+            </div>
+
             <p id="reportStatus" style="margin-top:16px;color:var(--primary-green);font-weight:bold;font-size:14px;"></p>
         </div>
 
-    </div><!-- end content-area -->
-</div><!-- end main-container -->
-
-<script>
+    </div></div><script>
     // ── FORMAT DATE: removes the T19:00:00.000Z part ──
     function fmtDate(raw) {
         if (!raw) return '';
@@ -753,7 +823,7 @@
             });
     }
 
-    // ── FETCH ISSUED BOOKS (NEW) ──
+    // ── FETCH ISSUED BOOKS ──
     function fetchIssuedBooks() {
         const tbody = document.getElementById('issuedTableBody');
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#aaa;padding:20px;">Loading...</td></tr>';
@@ -791,7 +861,6 @@
         fetch('http://localhost:8080/api/loans/overdue')
             .then(r => r.json())
             .then(data => {
-                // Fines table
                 const ftbody = document.querySelector('#finesTable tbody');
                 ftbody.innerHTML = '';
                 data.forEach(item => {
@@ -805,7 +874,6 @@
                     row.insertCell(4).innerHTML = `<span class="badge fine-badge">Rs ${fine}</span>`;
                 });
 
-                // Dashboard overdue table
                 const dtbody = document.getElementById('dashOverdueTable');
                 dtbody.innerHTML = '';
                 data.forEach(item => {
@@ -820,7 +888,7 @@
             });
     }
 
-    // ── DASHBOARD ──
+    // ── DASHBOARD CARD TOTALS ──
     function loadDashboard() {
         fetch('http://localhost:8080/api/books/')
             .then(r => r.json())
@@ -874,11 +942,38 @@
         document.getElementById('editModal').classList.remove('active');
     }
 
-    // ── GENERATE PDF ──
+    // ── CORRECTED REPORT ROUTER ENGINE ──
+    function generateReport(endpoint, type) {
+        let requestUrl = `http://localhost:8080/api/reports/${endpoint}`;
+        
+        if (type === 'date') {
+            const start = document.getElementById('reportStartDate').value;
+            const end = document.getElementById('reportEndDate').value;
+            requestUrl += `?start=${start}&end=${end}`;
+        } else if (type === 'target') {
+            const target = document.getElementById('reportTargetId').value;
+            requestUrl += `?targetId=${encodeURIComponent(target)}`;
+        }
+        
+        document.getElementById('reportStatus').innerText = "Processing report compilation request...";
+        
+        fetch(requestUrl)
+            .then(response => {
+                if(!response.ok) throw new Error("Server communication mismatch");
+                return response.text();
+            })
+            .then(msg => { 
+                document.getElementById('reportStatus').innerText = "Report generated successfully. Check root folder."; 
+                alert("Success: " + msg); 
+            })
+            .catch(err => {
+                document.getElementById('reportStatus').innerText = "Process error. Assure server is running with specified endpoints.";
+                alert("Generation Flagged: Check backend controller configurations.");
+            });
+    }
+
     function generateOverduePdf() {
-        fetch('http://localhost:8080/api/reports/overdue-pdf')
-            .then(r => r.text())
-            .then(msg => { document.getElementById('reportStatus').innerText = msg; alert(msg); });
+        generateReport('overdue-pdf', 'none');
     }
 
     // ── ON LOAD ──
